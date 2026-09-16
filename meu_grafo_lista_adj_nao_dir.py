@@ -38,10 +38,12 @@ class MeuGrafo(GrafoListaAdjacenciaNaoDirecionado):
 
     def arestas_sobre_vertice(self, V):
         '''
-        Provê uma lista que contém os rótulos das arestas que incidem sobre o vértice passado como parâmetro
-        :param V: Um string com o rótulo do vértice a ser analisado
-        :return: Uma lista os rótulos das arestas que incidem sobre o vértice
-        :raises: VerticeInvalidoException se o vértice não existe no grafo
+        Provê um set que contém os rótulos das arestas que incidem sobre o vértice passado como parâmetro
+        O conjunto terá o seguinte formato: {'a1', 'a2', ..., 'an'}
+        Onde a1, a2, ..., an são as arestas no grafo que incidem sobre o vértice V
+        :param V: O rótulo do vértice a ser analisado
+        :return: Um set dos rótulos das arestas que incidem sobre o vértice
+        :raises: VerticeInvalidoError se o vértice não existe no grafo
         '''
         pass
 
