@@ -8,6 +8,14 @@ from bibgrafo.grafo_json import GrafoJSON
 from bibgrafo.grafo_builder import GrafoBuilder
 
 
+def cria_grafo(vertices, arestas):
+    g = MeuGrafo()
+    for v in vertices:
+        g.adiciona_vertice(v)
+    for rotulo, v1, v2 in arestas:
+        g.adiciona_aresta(rotulo, v1, v2)
+    return g
+
 class TestGrafo(unittest.TestCase):
 
     def setUp(self):
@@ -53,6 +61,7 @@ class TestGrafo(unittest.TestCase):
             .vertices(1).build()
 
         # Grafos com laco
+
         self.g_l1 = GrafoJSON.json_to_grafo('test_json/grafo_l1.json', MeuGrafo())
 
         self.g_l2 = GrafoJSON.json_to_grafo('test_json/grafo_l2.json', MeuGrafo())
@@ -64,6 +73,10 @@ class TestGrafo(unittest.TestCase):
 
         self.g_l5 = GrafoBuilder().tipo(MeuGrafo()).vertices(3) \
             .arestas(3, lacos=1).build()
+
+        self.g_l6 = GrafoJSON.json_to_grafo('test_json/grafo_l6.json', MeuGrafo())
+
+        self.g_l7 = GrafoJSON.json_to_grafo('test_json/grafo_l7.json', MeuGrafo())
 
         # Grafos desconexos
         self.g_d = GrafoBuilder().tipo(MeuGrafo()) \
@@ -193,3 +206,57 @@ class TestGrafo(unittest.TestCase):
         self.assertFalse((self.g_l5.eh_completo()))
         self.assertFalse((self.g_d.eh_completo()))
         self.assertFalse((self.g_d2.eh_completo()))
+
+    def test_dfs(self):
+        esperado_j = cria_grafo(
+            ['J', 'C', 'E', 'P', 'T', 'M', 'Z'],
+            [('a1', 'J', 'C'), ('a2', 'C', 'E'), ('a4', 'C', 'P'),
+             ('a6', 'C', 'T'), ('a8', 'T', 'M'), ('a9', 'T', 'Z')])
+
+        self.assertEqual(self.g_p.dfs('J'), esperado_j)
+        esperado_z = cria_grafo(
+            ['Z', 'T', 'C', 'J', 'E', 'P', 'M'],
+            [('a9', 'Z', 'T'), ('a6', 'T', 'C'), ('a1', 'C', 'J'),
+             ('a2', 'C', 'E'), ('a4', 'C', 'P'), ('a7', 'C', 'M')])
+
+        self.assertEqual(self.g_p.dfs('Z'), esperado_z)
+
+    def test_bfs(self):
+        esperado_j = cria_grafo(
+            ['J', 'C', 'E', 'P', 'T', 'M', 'Z'],
+            [('a1', 'J', 'C'), ('a2', 'C', 'E'), ('a4', 'C', 'P'),
+             ('a6', 'C', 'T'), ('a7', 'C', 'M'), ('a9', 'T', 'Z')])
+
+        self.assertEqual(self.g_p.bfs('J'), esperado_j)
+        esperado_z = cria_grafo(
+            ['Z', 'T', 'C', 'M', 'J', 'E', 'P'],
+            [('a9', 'Z', 'T'), ('a6', 'T', 'C'), ('a8', 'T', 'M'),
+             ('a1', 'C', 'J'), ('a2', 'C', 'E'), ('a4', 'C', 'P')])
+        self.assertEqual(self.g_p.bfs('Z'), esperado_z)
+
+    def test_laco_e_vertice_isolado(self):
+        # DFS desce por B antes de voltar a A; BFS pega C direto de A
+        self.assertEqual(self.g_l6.dfs('A'),
+        cria_grafo(['A', 'B', 'C'], [('a2', 'A', 'B'), ('a3', 'B', 'C')]))
+        self.assertEqual(self.g_l6.bfs('A'), cria_grafo(['A', 'B', 'C'], [('a2', 'A', 'B'), ('a4', 'A', 'C')]))
+        # A partir de um vértice isolado, a árvore tem só a raiz
+        self.assertEqual(self.g_l7.dfs('D'), cria_grafo(['D'], []))
+        self.assertEqual(self.g_l7.bfs('D'), cria_grafo(['D'], []))
+
+    def test_quantidade_de_arestas(self):
+        for v in ['J', 'C', 'E', 'P', 'M', 'T', 'Z']:
+            for arvore in (self.g_p.dfs(v), self.g_p.bfs(v)):
+                self.assertEqual(len(arvore.vertices), 7)
+                self.assertEqual(len(arvore.arestas), 6)
+
+    def test_nao_modifica_grafo_original(self):
+        antes = str(self.g_p)
+        self.g_p.dfs('J')
+        self.g_p.bfs('J')
+        self.assertEqual(str(self.g_p), antes)
+
+    def test_vertice_inexistente(self):
+        with self.assertRaises(VerticeInvalidoError):
+            self.g_p.dfs('X')
+        with self.assertRaises(VerticeInvalidoError):
+            self.g_p.bfs('X')
