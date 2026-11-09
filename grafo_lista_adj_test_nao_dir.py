@@ -88,6 +88,9 @@ class TestGrafo(unittest.TestCase):
         # Grafo p\teste de remoção em casta
         self.g_r = GrafoBuilder().tipo(MeuGrafo()).vertices(2).arestas(1).build()
 
+        # Grafo para o Algoritmo de Dijkstra
+        self.g_dj = GrafoJSON.json_to_grafo('test_json/grafo_dj.json', MeuGrafo())
+
     def test_adiciona_aresta(self):
         self.assertTrue(self.g_p.adiciona_aresta('a10', 'J', 'C'))
         a = Aresta("zxc", self.g_p.get_vertice("C"), self.g_p.get_vertice("Z"))
@@ -260,3 +263,26 @@ class TestGrafo(unittest.TestCase):
             self.g_p.dfs('X')
         with self.assertRaises(VerticeInvalidoError):
             self.g_p.bfs('X')
+
+    def test_dijkstra(self):
+        casos = [
+            ('A', 'B', (['A', 'C', 'B'], 3)),
+            ('A', 'C', (['A', 'C'], 2)),
+            ('A', 'D', (['A', 'C', 'B', 'D'], 8)),
+            ('A', 'E', (['A', 'C', 'B', 'D', 'E'], 10)),
+            ('A', 'F', (['A', 'C', 'B', 'D', 'E', 'F'], 13)),
+            ('A', 'A', (['A'], 0)),
+            ('A', 'G', None),
+            ('E', 'A', (['E', 'D', 'B', 'C', 'A'], 10))
+        ]
+
+        for origem, destino, esperado in casos:
+            with self.subTest(origem=origem, destino=destino):
+                self.assertEqual(
+                    self.g_dj.dijkstra(origem, destino),
+                    esperado
+                )
+
+    def test_dijkstra_vertice_inexistente(self):
+        with (self.assertRaises(VerticeInvalidoError)):
+            self.g_dj.dijkstra('A', 'Z')
