@@ -1,6 +1,6 @@
 <div align="center">
     <h1>Atividades Grafos</h1>
-    <p>Fork do repoistório com correções e adições de testes unitários</p>
+    <p>Fork do repositório com correções e adições de testes unitários</p>
 </div>
 
 ## Como utilizar
@@ -21,4 +21,4 @@ Clique [aqui](https://github.com/arthur-dnts/atividades_grafos/blob/master/grafo
 Clique [aqui](https://github.com/arthur-dnts/atividades_grafos/blob/master/test_json/grafo_l6.json) e [aqui](https://github.com/arthur-dnts/atividades_grafos/blob/master/test_json/grafo_l7.json) para acessar os arquivos de testes, em cada arquivo clique no botão de download no canto superior direito e adicione esses arquivos no seu diretório **atividades_grafos/test_json/**
 
 ##### Testes para o Algoritmo de Dijkstra:
-Clique [aqui](https://github.com/arthur-dnts/atividades_grafos/blob/master/test_json/grafo_dj.json) para baixar o arquivo de teste, clique no botão de download no canto superior direito e adicione esse arquivo no seu diretório **atividades_grafos/test_json/**
+Clique [aqui](https://github.com/arthur-dnts/atividades_grafos/blob/master/test_json/grafo_dj.json) para acessar o arquivo de teste, clique no botão de download no canto superior direito e adicione esse arquivo no seu diretório **atividades_grafos/test_json/**
